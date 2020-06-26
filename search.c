@@ -1,0 +1,117 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <dirent.h>
+#include "utility.h"
+#include "distance.h"
+#include "search.h"
+
+void search_all(char *inputfile, char *dir, int limit){
+    int pathsize = 256;
+    char **paths = (char*)malloc(256 * pathsize);
+    for(int i = 0; i <= pathsize; i++)
+        paths[i] = (char*) malloc(pathsize);
+    char *contentif = read_file(inputfile);
+    int *size = malloc(sizeof(int));
+    store_paths(paths, dir, size);
+    *size -= 1;
+    D_PATH **dpath = (D_PATH*)malloc((*size) * sizeof(D_PATH));
+    for(int i = 0; i <= *size; i++) {
+        dpath[i] = (D_PATH *) malloc(sizeof(D_PATH));
+        dpath[i]->distance = 0;
+    }
+    for(int i = 0;i<(*size); i++) {
+        char *file_path = read_file(paths[i]);
+        int n = distance(contentif, file_path, NULL);
+        if ((n <= limit) && strcmp(inputfile, paths[i]) != 0) {
+            dpath[i]->distance = n;
+            strcpy(dpath[i]->path,paths[i]);
+        }
+        free(file_path);
+    }
+    bubblesort(dpath,*size);
+    for (int j = 0; j < (*size); ++j) {
+        if(dpath[j]->distance!=0) {
+            printf("%d %s\n", dpath[j]->distance, dpath[j]->path);
+        }
+    }
+    free(contentif);
+    for(int i = 0; i <= pathsize; i++)
+        free(paths[i]);
+    free(paths);
+    for(int i = 0; i <= *size; i++)
+        free(dpath[i]);
+    free(dpath);
+    free(size);
+}
+
+void search(char *inputfile, char *dir){
+    int pathsize = 256;
+    char **paths = (char*)malloc(256 * pathsize);
+    for(int i = 0; i <= pathsize; i++)
+        paths[i] = (char*) malloc(pathsize);
+    int MIN = -1;
+    char *buffer = malloc(pathsize);
+    char *contentif = read_file(inputfile);
+    int *size = malloc(sizeof(int));
+    store_paths(paths, dir, size);
+    for(int i = 0;i<(*size); i++) {
+        char *c2 = read_file(paths[i]);
+        int n = distance(contentif, c2, NULL);
+        if ((n <= MIN || MIN == -1) && strcmp(inputfile, paths[i]) != 0) {
+            if(n==MIN){
+                strcat(buffer,paths[i]);
+                strcat(buffer,"\n");
+            } else {
+                MIN = n;
+                strcpy(buffer,paths[i]);
+                strcat(buffer,"\n");
+            }
+        }
+        free(c2);
+    }
+    printf("%s",buffer);
+    for(int i = 0; i <= pathsize; i++)
+        free(paths[i]);
+    free(paths);
+    free(contentif);
+    free(size);
+    free(buffer);
+}
+
+void store_paths(char **paths, char *path, int *size){
+    DIR *dir;
+    struct dirent *dirent;
+    char *new = malloc(256);
+    dir = opendir(path);
+    while ((dirent = readdir(dir)) != NULL) {
+        build_path(new, path, dirent->d_name);
+        if((dirent->d_name)[0] != '.'){
+            if(dirent->d_type == 4){
+                store_paths(paths, new, size);
+            }else{
+                while(strcmp(*paths, "\0") != 0)
+                    paths++;
+                strcpy(*paths, new);
+                (*size)++;
+            }
+        }
+    }
+    free(new);
+    closedir(dir);
+}
+
+void bubblesort(D_PATH **dpath, int size){
+    int i, j;
+    for(i = 0; i < size - 1; i++)
+        for (j = size - 1; j > i; j--)
+            if (dpath[j]->distance < dpath[j-1]->distance)
+                _switch(&(dpath[j]), &(dpath[j - 1]));
+}
+
+void _switch(D_PATH **a, D_PATH **b){
+    D_PATH temp;
+    temp = **a;
+    **a = **b;
+    **b = temp;
+}

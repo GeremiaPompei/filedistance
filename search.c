@@ -7,20 +7,20 @@
 #include "search.h"
 
 void search_all(char *inputfile, char *dir, int limit){
+    int i;
     int pathsize = 256;
     char **paths = (char*)malloc(256 * pathsize);
-    for(int i = 0; i <= pathsize; i++)
+    for(i = 0; i <= pathsize; i++)
         paths[i] = (char*) malloc(pathsize);
     char *contentif = read_file(inputfile);
     int *size = malloc(sizeof(int));
     store_paths(paths, dir, size);
-    *size -= 1;
     D_PATH **dpath = (D_PATH*)malloc((*size) * sizeof(D_PATH));
-    for(int i = 0; i <= *size; i++) {
+    for(i = 0; i <= *size; i++) {
         dpath[i] = (D_PATH *) malloc(sizeof(D_PATH));
         dpath[i]->distance = 0;
     }
-    for(int i = 0;i<(*size); i++) {
+    for(i = 0;i<(*size); i++) {
         char *file_path = read_file(paths[i]);
         int n = distance(contentif, file_path, NULL);
         if ((n <= limit) && strcmp(inputfile, paths[i]) != 0) {
@@ -30,32 +30,33 @@ void search_all(char *inputfile, char *dir, int limit){
         free(file_path);
     }
     bubblesort(dpath,*size);
-    for (int j = 0; j < (*size); ++j) {
-        if(dpath[j]->distance!=0) {
-            printf("%d %s\n", dpath[j]->distance, dpath[j]->path);
+    for (i = 0; i < (*size); i++) {
+        if(dpath[i]->distance != 0) {
+            printf("%d %s\n", dpath[i]->distance, dpath[i]->path);
         }
     }
     free(contentif);
-    for(int i = 0; i <= pathsize; i++)
+    for(i = 0; i <= pathsize; i++)
         free(paths[i]);
     free(paths);
-    for(int i = 0; i <= *size; i++)
+    for(i = 0; i <= *size; i++)
         free(dpath[i]);
     free(dpath);
     free(size);
 }
 
 void search(char *inputfile, char *dir){
+    int i;
     int pathsize = 256;
     char **paths = (char*)malloc(256 * pathsize);
-    for(int i = 0; i <= pathsize; i++)
+    for(i = 0; i <= pathsize; i++)
         paths[i] = (char*) malloc(pathsize);
     int MIN = -1;
     char *buffer = malloc(pathsize);
     char *contentif = read_file(inputfile);
     int *size = malloc(sizeof(int));
     store_paths(paths, dir, size);
-    for(int i = 0;i<(*size); i++) {
+    for(i = 0;i<(*size); i++) {
         char *c2 = read_file(paths[i]);
         int n = distance(contentif, c2, NULL);
         if ((n <= MIN || MIN == -1) && strcmp(inputfile, paths[i]) != 0) {
@@ -71,7 +72,7 @@ void search(char *inputfile, char *dir){
         free(c2);
     }
     printf("%s",buffer);
-    for(int i = 0; i <= pathsize; i++)
+    for(i = 0; i <= pathsize; i++)
         free(paths[i]);
     free(paths);
     free(contentif);

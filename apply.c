@@ -4,6 +4,7 @@
 #include "apply.h"
 
 void apply_m(char *input, char *filem, char *output){
+    int i;
     char *contentinput,*contentfilem;
     contentinput = read_file(input);
     contentfilem = read_file(filem);
@@ -14,7 +15,7 @@ void apply_m(char *input, char *filem, char *output){
     buffer_to_ads(contentfilem, ads);
     int countCO=0, countI=0;
     int flag=0;
-    for(int i = 0;i<size;i++){
+    for(i = 0;i<size;i++){
         if(ads->num == i){
             if(strcmp(ads->command, "ADD") == 0) {
                 contentoutput[countCO] = ads->byte;

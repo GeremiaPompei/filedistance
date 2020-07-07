@@ -10,7 +10,8 @@ typedef struct DISTANCE_PATH {
 
 void search(char *inputfile, char *dir);
 void search_all(char *inputfile, char *dir, int limit);
-void store_paths(char **paths, char *path, int *size);
+int count_files(char *path);
+void store_paths(char **paths, char *path);
 void bubblesort(D_PATH **dpath, int size);
 void _switch(D_PATH **a, D_PATH **b);
 

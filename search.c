@@ -8,19 +8,18 @@
 
 void search_all(char *inputfile, char *dir, int limit){
     int i;
-    int pathsize = 256;
-    char **paths = (char*)malloc(256 * pathsize);
-    for(i = 0; i <= pathsize; i++)
-        paths[i] = (char*) malloc(pathsize);
+    int size = count_files(dir);
     char *contentif = read_file(inputfile);
-    int *size = malloc(sizeof(int));
-    store_paths(paths, dir, size);
-    D_PATH **dpath = (D_PATH*)malloc((*size) * sizeof(D_PATH));
-    for(i = 0; i <= *size; i++) {
+    char **paths = (D_PATH**)malloc(sizeof(D_PATH*) * size);
+    for(i = 0; i <= size; i++)
+        paths [i] = (char *) malloc(sizeof(D_PATH));
+    D_PATH **dpath = (D_PATH**)malloc(sizeof(D_PATH*) * size);
+    for(i = 0; i <= size; i++) {
         dpath[i] = (D_PATH *) malloc(sizeof(D_PATH));
         dpath[i]->distance = 0;
     }
-    for(i = 0;i<(*size); i++) {
+    store_paths(paths, dir);
+    for(i = 0;i<size; i++) {
         char *file_path = read_file(paths[i]);
         int n = distance(contentif, file_path, NULL);
         if ((n <= limit) && strcmp(inputfile, paths[i]) != 0) {
@@ -29,17 +28,17 @@ void search_all(char *inputfile, char *dir, int limit){
         }
         free(file_path);
     }
-    bubblesort(dpath,*size);
-    for (i = 0; i < (*size); i++) {
+    bubblesort(dpath,size);
+    for (i = 0; i < size; i++) {
         if(dpath[i]->distance != 0) {
             printf("%d %s\n", dpath[i]->distance, dpath[i]->path);
         }
     }
     free(contentif);
-    for(i = 0; i <= pathsize; i++)
+    for(i = 0; i <= size; i++)
         free(paths[i]);
     free(paths);
-    for(i = 0; i <= *size; i++)
+    for(i = 0; i <= size; i++)
         free(dpath[i]);
     free(dpath);
     free(size);
@@ -55,7 +54,7 @@ void search(char *inputfile, char *dir){
     char *buffer = malloc(pathsize);
     char *contentif = read_file(inputfile);
     int *size = malloc(sizeof(int));
-    store_paths(paths, dir, size);
+    store_paths(paths, dir);
     for(i = 0;i<(*size); i++) {
         char *c2 = read_file(paths[i]);
         int n = distance(contentif, c2, NULL);
@@ -80,25 +79,41 @@ void search(char *inputfile, char *dir){
     free(buffer);
 }
 
-void store_paths(char **paths, char *path, int *size){
+int count_files(char *path){
+    int size=0;
     DIR *dir;
     struct dirent *dirent;
-    char *new = malloc(256);
+    char new[256];
+    dir = opendir(path);
+    while ((dirent = readdir(dir)) != NULL) {
+        build_path(new, path, dirent->d_name);
+        if((dirent->d_name)[0] != '.'){
+            if(dirent->d_type == 4)
+                size+=count_files(new);
+            else
+                size++;
+        }
+    }
+    closedir(dir);
+    return size;
+}
+void store_paths(char **paths, char *path){
+    DIR *dir;
+    struct dirent *dirent;
+    char new[256];
     dir = opendir(path);
     while ((dirent = readdir(dir)) != NULL) {
         build_path(new, path, dirent->d_name);
         if((dirent->d_name)[0] != '.'){
             if(dirent->d_type == 4){
-                store_paths(paths, new, size);
+                store_paths(paths, new);
             }else{
                 while(strcmp(*paths, "\0") != 0)
                     paths++;
                 strcpy(*paths, new);
-                (*size)++;
             }
         }
     }
-    free(new);
     closedir(dir);
 }
 

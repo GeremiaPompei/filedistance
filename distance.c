@@ -66,9 +66,9 @@ void calculate_distance(char *contentf1, char *contentf2, int **matrix){
 void file_m_build(int **matrix, int sizef1, int sizef2, char *file1, char *file2, char *output){
     int i;
     int size = matrix[sizef1][sizef2] + 1;
-    char **instructions = (char*)malloc(size * 50);
+    char **instructions = (char**)malloc(sizeof(char *) * size);
     for(i = 0; i <= size; i++)
-        instructions[i] = (char*)malloc(50);
+        instructions[i] = (char*)malloc(sizeof(char ) * 50);
     FILE *file = fopen(output,"w");
     if(file==NULL)
         exit(1);

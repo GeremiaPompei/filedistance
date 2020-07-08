@@ -1,5 +1,6 @@
 #include <string.h>
 #include <stdlib.h>
+#include <sys/stat.h>
 #include "utility.h"
 
 void write_file(char *path,char *buffer,int size){
@@ -14,18 +15,19 @@ char *read_file(char *path){
     FILE *file = fopen(path,"r");
     if(file==NULL)
         exit(1);
-    long size = file_size(file);
+    long size = file_size(path);
     char *buffer = malloc(size);
     fread(buffer, sizeof(char), size,file);
     //fclose(file);
     return buffer;
 }
 
-long file_size(FILE *file){
-    long size = 0;
-    fseek(file, 0, SEEK_END);
-    size = ftell(file);
-    fseek(file, 0, SEEK_SET);
+long file_size(char *path){
+    int size = 0;
+    struct stat *st = malloc(sizeof(struct stat));
+    stat(path,st);
+    size = st->st_size;
+    free(st);
     return size;
 }
 

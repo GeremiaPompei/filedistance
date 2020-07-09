@@ -51,29 +51,29 @@ void apply_m(char *input, char *filem, char *output){
 }
 
 void buffer_to_ads(char *buffer, ADS *ads){
-    char tmp[256];
+    char tmp[5];
     int i = 0;
     while (buffer[i] != '\0') {
-        i = take_token(buffer, ads->command, i);
-        i = take_token(buffer, tmp, i);
+        i = take_token(buffer, ads->command, i,3);
+        i = take_token(buffer, tmp, i,4);
         ads->num = atoi(tmp);
         if (ads->command != "DEL") {
-            i = take_token(buffer, tmp, i);
-            ads->byte = (unsigned char)atoi(tmp);
+            i = take_token(buffer, tmp, i,1);
+            ads->byte = (unsigned char)tmp[0];
         }
+        i++;
         ads++;
     }
 }
 
-int take_token(char* buffer, char *token, int index){
-    char tmp[256];
+int take_token(char* buffer, char *token, int index, int limit){
+    char tmp[5] = "\0";
     int i=0;
-    while (buffer[index] != ',' && buffer[index] != '\n' && buffer[index] != '\0') {
+    while (i<limit) {
         tmp[i]=buffer[index];
         i++;
         index++;
     }
     strcpy(token, tmp);
-    index++;
     return index;
 }

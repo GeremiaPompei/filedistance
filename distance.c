@@ -76,12 +76,12 @@ void file_m_build(int **matrix, int sizef1, int sizef2, char *file1, char *file2
         int k = minimum(matrix[sizef1 - 1][sizef2 - 1], matrix[sizef1 - 1][sizef2], matrix[sizef1][sizef2 - 1]);
         if (file1[sizef1 - 1] != file2[sizef2 - 1]){
             if(k==matrix[sizef1 - 1][sizef2 - 1]){
-                sprintf(instructions[matrix[sizef1][sizef2]], "SET,%d,%d\n", sizef2, file2[sizef2 - 1]);
+                sprintf(instructions[matrix[sizef1][sizef2]], "SET%4d%1c\n", sizef2, file2[sizef2 - 1]);
             }else if(k==matrix[sizef1][sizef2 - 1]){
-                sprintf(instructions[matrix[sizef1][sizef2]], "ADD,%d,%d\n", sizef2, file1[sizef2 - 1]);
+                sprintf(instructions[matrix[sizef1][sizef2]], "ADD%4d%1c\n", sizef2, file1[sizef2 - 1]);
                 sizef1++;
             }else if(k==matrix[sizef1 - 1][sizef2]){
-                sprintf(instructions[matrix[sizef1][sizef2]], "DEL,%d,%c\n", sizef2, ' ');
+                sprintf(instructions[matrix[sizef1][sizef2]], "DEL%4d%1c\n", sizef2, ' ');
                 sizef2++;
             }
         }
@@ -90,18 +90,18 @@ void file_m_build(int **matrix, int sizef1, int sizef2, char *file1, char *file2
     }
     while(sizef2 > 0){
         if(file1[sizef1 - 1] != file2[sizef2 - 1])
-            sprintf(instructions[matrix[sizef1][sizef2]], "ADD,%d,%d\n", sizef2, file2[sizef2 - 1]);
+            sprintf(instructions[matrix[sizef1][sizef2]], "ADD%4d%1c\n", sizef2, file2[sizef2 - 1]);
         sizef2--;
     }
     while(sizef1 > 0){
         if(file1[sizef1 - 1] != file2[sizef2 - 1])
-            sprintf(instructions[matrix[sizef1][sizef2]], "DEL,%d,%c\n", sizef2, ' ');
+            sprintf(instructions[matrix[sizef1][sizef2]], "DEL%4d%1c\n", sizef2, ' ');
         sizef1--;
     }
     for (i = 0;i<size;i++)
         fprintf(file, "%s", instructions[i]);
     fclose(file);
-    for(i = 0; i <= size; i++)
+    for(i = 0; i < size; i++)
         free(instructions[i]);
     free(instructions);
 }

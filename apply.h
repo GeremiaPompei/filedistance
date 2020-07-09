@@ -9,6 +9,6 @@ typedef struct ADD_DEL_SET {
 
 void apply_m(char *input, char *filem, char *output);
 void buffer_to_ads(char *buffer, ADS *ads);
-int take_token(char* buffer, char *token, int index);
+int take_token(char* buffer, char *token, int index,int limit);
 
 #endif

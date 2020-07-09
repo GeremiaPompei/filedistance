@@ -8,7 +8,7 @@ void write_file(char *path,char *buffer,int size){
     if(file==NULL)
         exit(1);
     fwrite(buffer,sizeof(char),size,file);
-    //fclose(file);
+    fclose(file);
 }
 
 char *read_file(char *path){
@@ -18,7 +18,7 @@ char *read_file(char *path){
     long size = file_size(path);
     char *buffer = malloc(size);
     fread(buffer, sizeof(char), size,file);
-    //fclose(file);
+    fclose(file);
     return buffer;
 }
 

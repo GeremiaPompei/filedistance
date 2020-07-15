@@ -12,19 +12,21 @@ void write_file(char *path,char *buffer,int size){
 }
 
 char *read_file(char *path){
+    char *buffer = NULL;
     FILE *file = fopen(path,"r");
     if(file==NULL)
         exit(1);
     long size = file_size(path);
-    char *buffer = malloc(size);
+    buffer = malloc(size);
     fread(buffer, sizeof(char), size,file);
     fclose(file);
     return buffer;
 }
 
 long file_size(char *path){
-    int size = 0;
+    int size = -1;
     struct stat *st = malloc(sizeof(struct stat));
+    if(st == NULL) exit(1);
     stat(path,st);
     size = st->st_size;
     free(st);

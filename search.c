@@ -11,10 +11,10 @@ void search_all(char *inputfile, char *dir, int limit){
     int size = count_files(dir);
     char *contentif = read_file(inputfile);
     char **paths = (char **)malloc(sizeof(char *) * size);
-    for(i = 0; i <= size; i++)
+    for(i = 0; i < size; i++)
         paths [i] = (char *) malloc(sizeof(char ) * 256);
     D_PATH **dpath = (D_PATH**)malloc(sizeof(D_PATH*) * size);
-    for(i = 0; i <= size; i++) {
+    for(i = 0; i < size; i++) {
         dpath[i] = (D_PATH *) malloc(sizeof(D_PATH));
         dpath[i]->distance = 0;
     }
@@ -35,41 +35,41 @@ void search_all(char *inputfile, char *dir, int limit){
         }
     }
     free(contentif);
-    for(i = 0; i <= size; i++)
+    for(i = 0; i < size; i++)
         free(paths[i]);
     free(paths);
-    for(i = 0; i <= size; i++)
+    for(i = 0; i < size; i++)
         free(dpath[i]);
     free(dpath);
 }
 
 void search(char *inputfile, char *dir){
     int i;
+    char tmp[256];
     int size = count_files(dir);
-    char **paths = (char*)malloc(sizeof(char *) * size);
-    for(i = 0; i <= size; i++)
+    char **paths = (char**)malloc(sizeof(char *) * size);
+    for(i = 0; i < size; i++)
         paths[i] = (char*) malloc(sizeof(char ) * 256);
     int MIN = -1;
-    char *buffer = malloc(size);
+    char *buffer = malloc(256 * size);
     char *contentif = read_file(inputfile);
     store_paths(paths, dir);
     for(i = 0;i<size; i++) {
-        char *c2 = read_file(paths[i]);
-        int n = distance(contentif, c2, NULL);
+        char *contenttmpf = read_file(paths[i]);
+        int n = distance(contentif, contenttmpf, NULL);
         if ((n <= MIN || MIN == -1) && strcmp(inputfile, paths[i]) != 0) {
             if(n==MIN){
-                strcat(buffer,paths[i]);
-                strcat(buffer,"\n");
+                sprintf(tmp,"%d %s\n",MIN,paths[i]);
+                strcat(buffer,tmp);
             } else {
                 MIN = n;
-                strcpy(buffer,paths[i]);
-                strcat(buffer,"\n");
+                sprintf(buffer,"%d %s\n",MIN,paths[i]);
             }
         }
-        free(c2);
+        free(contenttmpf);
     }
     printf("%s",buffer);
-    for(i = 0; i <= size; i++)
+    for(i = 0; i < size; i++)
         free(paths[i]);
     free(paths);
     free(contentif);
@@ -94,6 +94,7 @@ int count_files(char *path){
     closedir(dir);
     return size;
 }
+
 void store_paths(char **paths, char *path){
     DIR *dir;
     struct dirent *dirent;

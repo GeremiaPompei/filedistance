@@ -8,14 +8,14 @@ void apply_m(char *input, char *filem, char *output){
     char *contentinput,*contentfilem;
     contentinput = read_file(input);
     contentfilem = read_file(filem);
-    int size = (strlen(contentinput) + 2);
-    char *contentoutput = malloc(size + strlen(contentfilem) / 7);
+    int size = strlen(contentinput);
+    char *contentoutput = malloc(size + strlen(contentfilem) / 9);
     ADS *ads = malloc(strlen(contentfilem));
     ADS *pads = ads;
     buffer_to_ads(contentfilem, ads);
     int countCO=0, countI=0;
     int flag=0;
-    for(i = 0;i<size;i++){
+    for(i = 0;i<size+2;i++){
         if(ads->num == i){
             if(strcmp(ads->command, "ADD") == 0) {
                 contentoutput[countCO] = ads->byte;
@@ -37,8 +37,9 @@ void apply_m(char *input, char *filem, char *output){
         }else {
             if(flag == 1)
                 flag=0;
-            else
+            else if(countI >=1)
                 contentoutput[countCO] = contentinput[countI - 1];
+            else countCO--;
         }
         countI++;
         countCO++;

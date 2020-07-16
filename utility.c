@@ -12,13 +12,16 @@ void write_file(char *path,char *buffer,int size){
 }
 
 char *read_file(char *path){
+    int i = -1,size = -1;
     char *buffer = NULL;
     FILE *file = fopen(path,"r");
     if(file==NULL)
         exit(1);
-    long size = file_size(path);
+    size = file_size(path);
     buffer = malloc(size);
-    fread(buffer, sizeof(char), size,file);
+    for (i=0;i<size;i++)
+        buffer[i] = fgetc(file);
+    buffer[i]='\0';
     fclose(file);
     return buffer;
 }

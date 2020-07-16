@@ -26,9 +26,9 @@ int distance(char *contentf1, char *contentf2, char *output) {
     int i,distance;
     int sizef1 = strlen(contentf1);
     int sizef2 = strlen(contentf2);
-    int **matrix = (int**) malloc((sizef1 + 1) * sizeof(int*) + 2);
+    int **matrix = (int**) malloc((sizef1 + 1) * sizeof(int*));
     for(i = 0; i <= sizef1; i++)
-        matrix[i] = (int*) malloc((sizef2 + 1) * sizeof(int) + 2);
+        matrix[i] = (int*) malloc((sizef2 + 1) * sizeof(int));
     calculate_distance(contentf1, contentf2, matrix);
     distance = matrix[sizef1][sizef2];
     if(output != NULL)

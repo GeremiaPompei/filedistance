@@ -6,59 +6,28 @@
 #include "distance.h"
 #include "search.h"
 
-void search_all(char *inputfile, char *dir, int limit){
-    int i;
+void search(char *inputfile, char *dir, int limit){
     int size = count_files(dir);
     char *contentif = read_file(inputfile);
-    char **paths = (char **)malloc(sizeof(char *) * size);
-    for(i = 0; i < size; i++)
-        paths [i] = (char *) malloc(sizeof(char ) * 256);
-    D_PATH **dpath = (D_PATH**)malloc(sizeof(D_PATH*) * size);
-    for(i = 0; i < size; i++) {
-        dpath[i] = (D_PATH *) malloc(sizeof(D_PATH));
-        dpath[i]->distance = 0;
-    }
+    char **paths = malloc_matrix(size,sizeof(char *) * size,sizeof(char ) * 256);
     store_paths(paths, dir);
-    for(i = 0;i<size; i++) {
-        char *file_path = read_file(paths[i]);
-        int n = distance(contentif, file_path, NULL);
-        if ((n <= limit) && strcmp(inputfile, paths[i]) != 0) {
-            dpath[i]->distance = n;
-            strcpy(dpath[i]->path,paths[i]);
-        }
-        free(file_path);
-    }
-    bubblesort(dpath,size);
-    for (i = 0; i < size; i++) {
-        if(dpath[i]->distance != 0) {
-            printf("%d %s\n", dpath[i]->distance, dpath[i]->path);
-        }
-    }
+    if(limit==NULL)
+        search_one(inputfile,size,paths,contentif);
+    else
+        search_all(inputfile,size,paths,contentif,limit);
     free(contentif);
-    for(i = 0; i < size; i++)
-        free(paths[i]);
-    free(paths);
-    for(i = 0; i < size; i++)
-        free(dpath[i]);
-    free(dpath);
+    free_matrix(paths,size);
 }
 
-void search(char *inputfile, char *dir){
-    int i;
-    char tmp[256];
-    int size = count_files(dir);
-    char **paths = (char**)malloc(sizeof(char *) * size);
-    for(i = 0; i < size; i++)
-        paths[i] = (char*) malloc(sizeof(char ) * 256);
-    int MIN = -1;
+void search_one(char *inputfile, int size, char **paths, char *contentif){
+    int i= -1,MIN = -1;
     char *buffer = malloc(256 * size);
-    char *contentif = read_file(inputfile);
-    store_paths(paths, dir);
     for(i = 0;i<size; i++) {
         char *contenttmpf = read_file(paths[i]);
         int n = distance(contentif, contenttmpf, NULL);
         if ((n <= MIN || MIN == -1) && strcmp(inputfile, paths[i]) != 0) {
             if(n==MIN){
+                char tmp[256];
                 sprintf(tmp,"%d %s\n",MIN,paths[i]);
                 strcat(buffer,tmp);
             } else {
@@ -69,19 +38,41 @@ void search(char *inputfile, char *dir){
         free(contenttmpf);
     }
     printf("%s",buffer);
-    for(i = 0; i < size; i++)
-        free(paths[i]);
-    free(paths);
-    free(contentif);
     free(buffer);
+}
+
+void search_all(char *inputfile, int size, char **paths, char *contentif, int limit){
+    int i = -1;
+    D_PATH **dpath = malloc_matrix(size,sizeof(D_PATH*) * size, sizeof(D_PATH));
+    for(i = 0; i < size; i++)
+        dpath[i]->distance = 0;
+    for(i = 0;i<size; i++) {
+        char *file_path = read_file(paths[i]);
+        int n = distance(contentif, file_path, NULL);
+        if ((n <= limit) && strcmp(inputfile, paths[i]) != 0) {
+            dpath[i]->distance = n;
+            strcpy(dpath[i]->path,paths[i]);
+        }
+        free(file_path);
+    }
+    bubblesort(dpath,size);
+    print_dpaths(dpath,size);
+    free_matrix(dpath,size);
+}
+
+void print_dpaths(D_PATH **dpath,int size){
+    for (int i = 0; i < size; i++) {
+        if(dpath[i]->distance != 0) {
+            printf("%d %s\n", dpath[i]->distance, dpath[i]->path);
+        }
+    }
 }
 
 int count_files(char *path){
     int size=0;
-    DIR *dir;
     struct dirent *dirent;
     char new[256];
-    dir = opendir(path);
+    DIR *dir = opendir(path);
     while ((dirent = readdir(dir)) != NULL) {
         build_path(new, path, dirent->d_name);
         if((dirent->d_name)[0] != '.'){
@@ -96,10 +87,9 @@ int count_files(char *path){
 }
 
 void store_paths(char **paths, char *path){
-    DIR *dir;
     struct dirent *dirent;
     char new[256];
-    dir = opendir(path);
+    DIR *dir = opendir(path);
     while ((dirent = readdir(dir)) != NULL) {
         build_path(new, path, dirent->d_name);
         if((dirent->d_name)[0] != '.'){

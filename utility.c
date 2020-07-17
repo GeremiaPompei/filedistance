@@ -3,10 +3,10 @@
 #include <sys/stat.h>
 #include "utility.h"
 
-void **malloc_matrix(int size1, int size2){
+void **malloc_matrix(int sizefor, int size1, int size2){
     int i = -1;
-    int **matrix = malloc(size1);
-    for(i = 0; i < size1; i++)
+    void **matrix = malloc(size1);
+    for(i = 0; i < sizefor; i++)
         matrix[i] = malloc(size2);
     return matrix;
 }

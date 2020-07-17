@@ -14,7 +14,7 @@ int main(int argc, char **argv) {
         if(strcmp(argv[1],"distance")==0){
             time_distance_m(argv[2],argv[3],NULL);
         }else if(strcmp(argv[1],"search")==0){
-            search(argv[2],argv[3]);
+            search(argv[2],argv[3],NULL);
         }
     }
     if(argc==5){
@@ -23,7 +23,7 @@ int main(int argc, char **argv) {
         }else if(strcmp(argv[1],"apply")==0){
             apply_m(argv[2],argv[3],argv[4]);
         } else if(strcmp(argv[1],"searchall")==0)
-            search_all(argv[2],argv[3],atoi(argv[4]));
+            search(argv[2],argv[3],atoi(argv[4]));
     }
     return 0;
 }

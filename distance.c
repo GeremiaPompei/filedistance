@@ -23,19 +23,16 @@ void time_distance_m(char *file1, char *file2, char *output){
 }
 
 int distance(char *contentf1, char *contentf2, char *output) {
-    int i,distance;
-    int sizef1 = strlen(contentf1);
-    int sizef2 = strlen(contentf2);
-    int **matrix = (int**) malloc((sizef1 + 1) * sizeof(int*));
-    for(i = 0; i <= sizef1; i++)
-        matrix[i] = (int*) malloc((sizef2 + 1) * sizeof(int));
+    int i = -1,distance = -1, sizef1 = -1, sizef2 = -1;
+    int **matrix = NULL;
+    sizef1 = strlen(contentf1);
+    sizef2 = strlen(contentf2);
+    matrix = malloc_matrix((sizef1 + 1) * sizeof(int*) + 1,(sizef2 + 1) * sizeof(int));
     calculate_distance(contentf1, contentf2, matrix);
     distance = matrix[sizef1][sizef2];
     if(output != NULL)
         file_m_build(matrix, sizef1, sizef2, contentf1, contentf2, output);
-    for(i = 0; i <= sizef1; i++)
-        free(matrix[i]);
-    free(matrix);
+    free_matrix(matrix,sizef1+1);
     return distance;
 }
 

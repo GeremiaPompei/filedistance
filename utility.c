@@ -3,27 +3,45 @@
 #include <sys/stat.h>
 #include "utility.h"
 
+void **malloc_matrix(int size1, int size2){
+    int i = -1;
+    int **matrix = malloc(size1);
+    for(i = 0; i < size1; i++)
+        matrix[i] = malloc(size2);
+    return matrix;
+}
+
+void free_matrix(void **matrix, int size){
+    int i = -1;
+    for(i = 0; i < size; i++)
+        free(matrix[i]);
+    free(matrix);
+}
+
 void write_file(char *path,char *buffer,int size){
     FILE *file = fopen(path,"w");
-    if(file==NULL)
-        exit(1);
+    if(file==NULL) exit(1);
     fwrite(buffer,sizeof(char),size,file);
     fclose(file);
 }
 
 char *read_file(char *path){
-    int i = -1,size = -1;
+    int size = -1;
     char *buffer = NULL;
     FILE *file = fopen(path,"r");
-    if(file==NULL)
-        exit(1);
+    if(file==NULL) exit(1);
     size = file_size(path);
     buffer = malloc(size);
+    read_string_from_file(buffer,size,file);
+    fclose(file);
+    return buffer;
+}
+
+void read_string_from_file(char *buffer, int size, FILE *file){
+    int i = -1;
     for (i=0;i<size;i++)
         buffer[i] = fgetc(file);
     buffer[i]='\0';
-    fclose(file);
-    return buffer;
 }
 
 long file_size(char *path){

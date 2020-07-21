@@ -21,7 +21,7 @@ void free_matrix(void **matrix, int size){
 void write_file(char *path,char *buffer,int size){
     FILE *file = fopen(path,"w");
     if(file==NULL) exit(1);
-    fwrite(buffer,sizeof(char),size,file);
+    fwrite(buffer,sizeof(char ),size,file);
     fclose(file);
 }
 

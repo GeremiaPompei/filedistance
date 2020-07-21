@@ -4,17 +4,18 @@
 #include "apply.h"
 
 void apply_m(char *input, char *filem, char *output){
-    int i;
-    char *contentinput,*contentfilem;
-    contentinput = read_file(input);
-    contentfilem = read_file(filem);
-    int size = strlen(contentinput);
-    char *contentoutput = malloc(size + strlen(contentfilem) / 9);
-    ADS *ads = malloc(strlen(contentfilem));
-    ADS *pads = ads;
-    buffer_to_ads(contentfilem, ads);
+    int i = 0, size = 0;
     int countCO=0, countI=0;
     int flag=0;
+    ADS *ads = NULL, *pads = NULL;
+    char *contentinput = NULL,*contentfilem = NULL, *contentoutput = NULL;
+    contentinput = read_file(input);
+    contentfilem = read_file(filem);
+    size = strlen(contentinput);
+    contentoutput = malloc(size + strlen(contentfilem) / 8);
+    ads = malloc(strlen(contentfilem) / 8 * sizeof(ADS));
+    pads = ads;
+    buffer_to_ads(contentfilem, ads);
     for(i = 0;i<size+2;i++){
         if(ads->num == i){
             if(strcmp(ads->command, "ADD") == 0) {

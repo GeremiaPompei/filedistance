@@ -96,6 +96,6 @@ void file_m_build(int **matrix, int sizef1, int sizef2, char *file1, char *file2
     for (i = 1;i<size;i++) {
         fprintf(file, "%s", instructions[i]);
     }
-    fclose(file);
     free_matrix(instructions,size+1);
+    fclose(file);
 }

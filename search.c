@@ -21,7 +21,7 @@ void search(char *inputfile, char *dir, int limit){
 
 void search_one(char *inputfile, int size, char **paths, char *contentif){
     int i= -1,MIN = -1;
-    char *buffer = malloc(256 * size);
+    char *buffer = malloc(256 * (size+1) * sizeof(char ));
     for(i = 0;i<size; i++) {
         char *contenttmpf = read_file(paths[i]);
         int n = distance(contentif, contenttmpf, NULL);

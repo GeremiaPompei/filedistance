@@ -10,10 +10,11 @@
 void search(char *inputfile, char *dir, int limit){
     int *index = 0;
     char *contentif = read_file(inputfile);
-    int size = store_paths(NULL,dir , inputfile,&index);
+    visit_in_depth(dir, inputfile, &index, NULL);
+    int size = index;
     char **paths = malloc_matrix(size,sizeof(char *) * size,sizeof(char ) * 256);
     index = 0;
-    store_paths(paths, dir , inputfile, &index);
+    visit_in_depth(dir, inputfile, &index, paths);
     if(limit==NULL)
         search_one(inputfile,size,paths,contentif);
     else
@@ -72,7 +73,7 @@ void print_dpaths(D_PATH **dpath,int size){
     }
 }
 
-int store_paths(char **paths, char *path, char *inputfile,int *index){
+void visit_in_depth(char *path, char *inputfile, int *index, char **paths){
     struct dirent *dirent = NULL;
     char new[256];
     DIR *dir = NULL;
@@ -81,7 +82,7 @@ int store_paths(char **paths, char *path, char *inputfile,int *index){
         build_path(new, path, dirent->d_name);
         if((dirent->d_name)[0] != '.' && strcmp(inputfile, new) != 0){
             if(dirent->d_type == 4){
-                store_paths(paths, new, inputfile, index);
+                visit_in_depth(new, inputfile, index, paths);
             }else{
                 if(paths != NULL)
                     strcpy(paths[*index], new);
@@ -90,7 +91,6 @@ int store_paths(char **paths, char *path, char *inputfile,int *index){
         }
     }
     closedir(dir);
-    return *index;
 }
 
 void bubblesort(D_PATH **dpath, int size){

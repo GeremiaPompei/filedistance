@@ -12,7 +12,7 @@ void search(char *inputfile, char *dir, int limit){
     char *contentif = read_file(inputfile);
     visit_in_depth(dir, inputfile, &index, NULL);
     int size = index;
-    char **paths = malloc_matrix(size,sizeof(char *) * size,sizeof(char ) * 256);
+    char **paths = malloc(sizeof(char *) * size);
     index = 0;
     visit_in_depth(dir, inputfile, &index, paths);
     if(limit==NULL)
@@ -49,14 +49,15 @@ void search_one(char *inputfile, int size, char **paths, char *contentif){
 void search_all(char *inputfile, int size, char **paths, char *contentif, int limit){
     int i = -1;
     D_PATH **dpath = malloc_matrix(size,sizeof(D_PATH*) * size, sizeof(D_PATH));
-    for(i = 0; i < size; i++)
-        dpath[i]->distance = 0;
     for(i = 0;i<size; i++) {
         char *file_path = read_file(paths[i]);
         int n = distance(contentif, file_path, NULL);
         if ((n <= limit) && strcmp(inputfile, paths[i]) != 0) {
             dpath[i]->distance = n;
-            strcpy(dpath[i]->path,paths[i]);
+            dpath[i]->path = paths[i];
+        } else {
+            dpath[i]->distance = -1;
+            dpath[i]->path = NULL;
         }
         free(file_path);
     }
@@ -66,11 +67,9 @@ void search_all(char *inputfile, int size, char **paths, char *contentif, int li
 }
 
 void print_dpaths(D_PATH **dpath,int size){
-    for (int i = 0; i < size; i++) {
-        if(dpath[i]->distance != 0) {
+    for (int i = 0; i < size; i++)
+        if(dpath[i]->distance != 0)
             printf("%d %s\n", dpath[i]->distance, dpath[i]->path);
-        }
-    }
 }
 
 void visit_in_depth(char *path, char *inputfile, int *index, char **paths){
@@ -84,8 +83,11 @@ void visit_in_depth(char *path, char *inputfile, int *index, char **paths){
             if(dirent->d_type == 4){
                 visit_in_depth(new, inputfile, index, paths);
             }else{
-                if(paths != NULL)
+                if(paths != NULL) {
+                    assert(paths[*index] = malloc(strlen(new) + 1));
                     strcpy(paths[*index], new);
+
+                }
                 (*index)++;
             }
         }

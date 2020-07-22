@@ -5,7 +5,7 @@
 
 typedef struct DISTANCE_PATH {
     unsigned int distance;
-    char path[256];
+    char *path;
 }D_PATH;
 
 void search(char *inputfile, char *dir, int limit);

@@ -28,12 +28,12 @@ void write_file(char *path,char *buffer,int size){
 }
 
 char *read_file(char *path){
-    int size = -1;
-    char *buffer = NULL;
+    long size = -1;
     FILE *file = NULL;
+    char *buffer = NULL;
     assert(file = fopen(path,"r"));
     size = file_size(path);
-    buffer = malloc(size);
+    assert(buffer = malloc(size));
     read_string_from_file(buffer,size,file);
     fclose(file);
     return buffer;

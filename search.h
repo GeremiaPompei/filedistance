@@ -12,8 +12,7 @@ void search(char *inputfile, char *dir, int limit);
 void search_one(char *inputfile, int size, char **paths, char *contentif);
 void search_all(char *inputfile, int size, char **paths, char *contentif, int limit);
 void print_dpaths(D_PATH **dpath,int size);
-int count_files(char *path);
-void store_paths(char **paths, char *path);
+int store_paths(char **paths, char *path,char *inputfile,int *index);
 void bubblesort(D_PATH **dpath, int size);
 void _switch(D_PATH **a, D_PATH **b);
 

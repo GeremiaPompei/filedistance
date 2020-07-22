@@ -7,10 +7,12 @@
 #include "search.h"
 
 void search(char *inputfile, char *dir, int limit){
-    int size = count_files(dir);
+    int *index = 0;
     char *contentif = read_file(inputfile);
+    int size = store_paths(NULL,dir , inputfile,&index);
     char **paths = malloc_matrix(size,sizeof(char *) * size,sizeof(char ) * 256);
-    store_paths(paths, dir);
+    index = 0;
+    store_paths(paths, dir , inputfile, &index);
     if(limit==NULL)
         search_one(inputfile,size,paths,contentif);
     else
@@ -68,41 +70,24 @@ void print_dpaths(D_PATH **dpath,int size){
     }
 }
 
-int count_files(char *path){
-    int size=0;
+int store_paths(char **paths, char *path, char *inputfile,int *index){
     struct dirent *dirent;
     char new[256];
     DIR *dir = opendir(path);
     while ((dirent = readdir(dir)) != NULL) {
         build_path(new, path, dirent->d_name);
-        if((dirent->d_name)[0] != '.'){
-            if(dirent->d_type == 4)
-                size+=count_files(new);
-            else
-                size++;
-        }
-    }
-    closedir(dir);
-    return size;
-}
-
-void store_paths(char **paths, char *path){
-    struct dirent *dirent;
-    char new[256];
-    DIR *dir = opendir(path);
-    while ((dirent = readdir(dir)) != NULL) {
-        build_path(new, path, dirent->d_name);
-        if((dirent->d_name)[0] != '.'){
+        if((dirent->d_name)[0] != '.' && strcmp(inputfile, new) != 0){
             if(dirent->d_type == 4){
-                store_paths(paths, new);
+                store_paths(paths, new, inputfile, index);
             }else{
-                while(strcmp(*paths, "\0") != 0)
-                    paths++;
-                strcpy(*paths, new);
+                if(paths != NULL)
+                    strcpy(paths[*index], new);
+                (*index)++;
             }
         }
     }
     closedir(dir);
+    return *index;
 }
 
 void bubblesort(D_PATH **dpath, int size){

@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <dirent.h>
+#include <assert.h>
 #include "utility.h"
 #include "distance.h"
 #include "search.h"
@@ -73,7 +74,8 @@ void print_dpaths(D_PATH **dpath,int size){
 int store_paths(char **paths, char *path, char *inputfile,int *index){
     struct dirent *dirent;
     char new[256];
-    DIR *dir = opendir(path);
+    DIR *dir = NULL;
+    assert(dir = opendir(path));
     while ((dirent = readdir(dir)) != NULL) {
         build_path(new, path, dirent->d_name);
         if((dirent->d_name)[0] != '.' && strcmp(inputfile, new) != 0){

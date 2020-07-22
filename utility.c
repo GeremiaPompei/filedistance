@@ -1,6 +1,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <sys/stat.h>
+#include <assert.h>
 #include "utility.h"
 
 void **malloc_matrix(int sizefor, int size1, int size2){
@@ -19,8 +20,8 @@ void free_matrix(void **matrix, int size){
 }
 
 void write_file(char *path,char *buffer,int size){
-    FILE *file = fopen(path,"w");
-    if(file==NULL) exit(1);
+    FILE *file = NULL;
+    assert(file = fopen(path,"w"));
     fwrite(buffer,sizeof(char ),size,file);
     fclose(file);
 }
@@ -28,8 +29,8 @@ void write_file(char *path,char *buffer,int size){
 char *read_file(char *path){
     int size = -1;
     char *buffer = NULL;
-    FILE *file = fopen(path,"r");
-    if(file==NULL) exit(1);
+    FILE *file = NULL;
+    assert(file = fopen(path,"r"));
     size = file_size(path);
     buffer = malloc(size);
     read_string_from_file(buffer,size,file);
@@ -62,7 +63,9 @@ int minimum(int a, int b, int c) {
 }
 
 void build_path(char* new,char *old,char *name){
+    int n = strlen(old) - 1;
     strcpy(new,old);
-    strcat(new,"/");
+    if(old[n] != '/')
+        strcat(new,"/");
     strcat(new,name);
 }

@@ -52,12 +52,10 @@ void search_all(char *inputfile, int size, char **paths, char *contentif, int li
     for(i = 0;i<size; i++) {
         char *file_path = read_file(paths[i]);
         int n = distance(contentif, file_path, NULL);
+        dpath[i]->distance = -1;
         if ((n <= limit) && strcmp(inputfile, paths[i]) != 0) {
             dpath[i]->distance = n;
             dpath[i]->path = paths[i];
-        } else {
-            dpath[i]->distance = -1;
-            dpath[i]->path = NULL;
         }
         free(file_path);
     }
@@ -68,16 +66,16 @@ void search_all(char *inputfile, int size, char **paths, char *contentif, int li
 
 void print_dpaths(D_PATH **dpath,int size){
     for (int i = 0; i < size; i++)
-        if(dpath[i]->distance != 0)
+        if(dpath[i]->distance != -1)
             printf("%d %s\n", dpath[i]->distance, dpath[i]->path);
 }
 
 void visit_in_depth(char *path, char *inputfile, int *index, char **paths){
     struct dirent *dirent = NULL;
-    char new[256];
     DIR *dir = NULL;
     assert(dir = opendir(path));
     while ((dirent = readdir(dir)) != NULL) {
+        char *new[strlen(path) + strlen(dirent->d_name)];
         build_path(new, path, dirent->d_name);
         if((dirent->d_name)[0] != '.' && strcmp(inputfile, new) != 0){
             if(dirent->d_type == 4){
@@ -86,7 +84,6 @@ void visit_in_depth(char *path, char *inputfile, int *index, char **paths){
                 if(paths != NULL) {
                     assert(paths[*index] = malloc(strlen(new) + 1));
                     strcpy(paths[*index], new);
-
                 }
                 (*index)++;
             }

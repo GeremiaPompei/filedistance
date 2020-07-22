@@ -1,19 +1,18 @@
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 #include "utility.h"
 #include "apply.h"
 
 void apply_m(char *input, char *filem, char *output){
-    int i = 0, size = 0;
-    int countCO=0, countI=0;
-    int flag=0;
+    int i = -1, size = -1, countCO = 0, countI = 0, flag=0;
     ADS *ads = NULL, *pads = NULL;
     char *contentinput = NULL,*contentfilem = NULL, *contentoutput = NULL;
     contentinput = read_file(input);
     contentfilem = read_file(filem);
     size = strlen(contentinput);
-    contentoutput = malloc(size + strlen(contentfilem) / 8);
-    ads = malloc(strlen(contentfilem) / 8 * sizeof(ADS));
+    assert(contentoutput = malloc(size + strlen(contentfilem) / 8));
+    assert(ads = malloc(strlen(contentfilem) / 8 * sizeof(ADS)));
     pads = ads;
     buffer_to_ads(contentfilem, ads);
     for(i = 0;i<size+2;i++){

@@ -24,7 +24,8 @@ void search(char *inputfile, char *dir, int limit){
 
 void search_one(char *inputfile, int size, char **paths, char *contentif){
     int i= -1,MIN = -1;
-    char *buffer = malloc(256 * (size+1) * sizeof(char ));
+    char *buffer = NULL;
+    assert(buffer= malloc(256 * (size+1) * sizeof(char )));
     for(i = 0;i<size; i++) {
         char *contenttmpf = read_file(paths[i]);
         int n = distance(contentif, contenttmpf, NULL);
@@ -72,7 +73,7 @@ void print_dpaths(D_PATH **dpath,int size){
 }
 
 int store_paths(char **paths, char *path, char *inputfile,int *index){
-    struct dirent *dirent;
+    struct dirent *dirent = NULL;
     char new[256];
     DIR *dir = NULL;
     assert(dir = opendir(path));

@@ -2,15 +2,15 @@
 #include <string.h>
 #include <stdlib.h>
 #include <time.h>
+#include <assert.h>
 #include "utility.h"
 #include "distance.h"
 
 void time_distance_m(char *file1, char *file2, char *output){
-    char *contentf1 = NULL;
-    char *contentf2 = NULL;
-    int dist;
-    double time;
-    clock_t clock1,clock2;
+    char *contentf1 = NULL, *contentf2 = NULL;
+    int dist = -1;
+    double time = -1;
+    clock_t clock1 = NULL,clock2 = NULL;
     contentf1 = read_file(file1);
     contentf2 = read_file(file2);
     clock1 = clock();
@@ -64,9 +64,8 @@ void file_m_build(int **matrix, int sizef1, int sizef2, char *file1, char *file2
     int i;
     int size = matrix[sizef1][sizef2] + 1;
     char **instructions = malloc_matrix(size + 1,sizeof(char *) * (size + 1),sizeof(char ) * 9);
-    FILE *file = fopen(output,"w");
-    if(file==NULL)
-        exit(1);
+    FILE *file = NULL;
+    assert(file = fopen(output,"w"));
     while(sizef1 > 0 && sizef2 > 0){
         int k = minimum(matrix[sizef1 - 1][sizef2 - 1], matrix[sizef1 - 1][sizef2], matrix[sizef1][sizef2 - 1]);
         if (file1[sizef1 - 1] != file2[sizef2 - 1]){

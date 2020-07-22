@@ -6,9 +6,10 @@
 
 void **malloc_matrix(int sizefor, int size1, int size2){
     int i = -1;
-    void **matrix = malloc(size1);
+    void **matrix = NULL;
+    assert(matrix = malloc(size1));
     for(i = 0; i < sizefor; i++)
-        matrix[i] = malloc(size2);
+        assert(matrix[i] = malloc(size2));
     return matrix;
 }
 
@@ -47,8 +48,8 @@ void read_string_from_file(char *buffer, int size, FILE *file){
 
 long file_size(char *path){
     int size = -1;
-    struct stat *st = malloc(sizeof(struct stat));
-    if(st == NULL) exit(1);
+    struct stat *st = NULL;
+    assert(st = malloc(sizeof(struct stat)));
     stat(path,st);
     size = st->st_size;
     free(st);

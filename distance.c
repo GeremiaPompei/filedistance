@@ -63,37 +63,46 @@ void calculate_distance(char *contentf1, char *contentf2, int **matrix){
 void file_m_build(int **matrix, int sizef1, int sizef2, char *file1, char *file2, char *output){
     int i;
     int size = matrix[sizef1][sizef2] + 1;
+    int *psizef1 = &sizef1, *psizef2 = &sizef2;
     char **instructions = malloc_matrix(size + 1,sizeof(char *) * (size + 1),sizeof(char ) * 8);
     FILE *file = NULL;
     assert(file = fopen(output,"w"));
-    while(sizef1 > 0 && sizef2 > 0){
-        int k = minimum(matrix[sizef1 - 1][sizef2 - 1], matrix[sizef1 - 1][sizef2], matrix[sizef1][sizef2 - 1]);
-        if (file1[sizef1 - 1] != file2[sizef2 - 1]){
-            if(k==matrix[sizef1 - 1][sizef2 - 1]){
-                sprintf(instructions[matrix[sizef1][sizef2]], "SET%4d%1c\n", sizef2, file2[sizef2 - 1]);
-            }else if(k==matrix[sizef1][sizef2 - 1]){
-                sprintf(instructions[matrix[sizef1][sizef2]], "ADD%4d%1c\n", sizef2, file2[sizef2 - 1]);
-                sizef1++;
-            }else if(k==matrix[sizef1 - 1][sizef2]){
-                sprintf(instructions[matrix[sizef1][sizef2]], "DEL%4d%1c\n", sizef2, ' ');
-                sizef2++;
-            }
-        }
-        sizef1--;
-        sizef2--;
-    }
-    while(sizef2 > 0){
-        if(file1[sizef1 - 1] != file2[sizef2 - 1])
-            sprintf(instructions[matrix[sizef1][sizef2]], "ADD%4d%1c\n", sizef2, file2[sizef2 - 1]);
-        sizef2--;
-    }
-    while(sizef1 > 0){
-        if(file1[sizef1 - 1] != file2[sizef2 - 1])
-            sprintf(instructions[matrix[sizef1][sizef2]], "DEL%4d%1c\n", sizef2, ' ');
-        sizef1--;
-    }
+    middle_instructions(matrix,instructions,psizef1,psizef2,file1,file2);
+    final_instructions(matrix,instructions,psizef1,psizef2,file1,file2);
     for (i = 1;i<size;i++)
         fprintf(file, "%s", instructions[i]);
     fclose(file);
     free_matrix(instructions,size + 1);
+}
+
+void middle_instructions(int **matrix, char **instructions, int *sizef1, int *sizef2,char *file1, char *file2) {
+    while(*sizef1 > 0 && *sizef2 > 0){
+        int k = minimum(matrix[*sizef1 - 1][*sizef2 - 1], matrix[*sizef1 - 1][*sizef2], matrix[*sizef1][*sizef2 - 1]);
+        if (file1[*sizef1 - 1] != file2[*sizef2 - 1]){
+            if(k==matrix[*sizef1 - 1][*sizef2 - 1]){
+                sprintf(instructions[matrix[*sizef1][*sizef2]], "SET%4d%1c\n", *sizef2, file2[*sizef2 - 1]);
+            }else if(k==matrix[*sizef1][*sizef2 - 1]){
+                sprintf(instructions[matrix[*sizef1][*sizef2]], "ADD%4d%1c\n", *sizef2, file2[*sizef2 - 1]);
+                (*sizef1)++;
+            }else if(k==matrix[*sizef1 - 1][*sizef2]){
+                sprintf(instructions[matrix[*sizef1][*sizef2]], "DEL%4d%1c\n", *sizef2, ' ');
+                (*sizef2)++;
+            }
+        }
+        (*sizef1)--;
+        (*sizef2)--;
+    }
+}
+
+void final_instructions(int **matrix, char **instructions, int *sizef1, int *sizef2,char *file1, char *file2) {
+    while(*sizef2 > 0){
+        if(file1[*sizef1 - 1] != file2[*sizef2 - 1])
+            sprintf(instructions[matrix[*sizef1][*sizef2]], "ADD%4d%1c\n", *sizef2, file2[*sizef2 - 1]);
+        (*sizef2)--;
+    }
+    while(*sizef1 > 0){
+        if(file1[*sizef1 - 1] != file2[*sizef2 - 1])
+            sprintf(instructions[matrix[*sizef1][*sizef2]], "DEL%4d%1c\n", *sizef2, ' ');
+        (*sizef1)--;
+    }
 }

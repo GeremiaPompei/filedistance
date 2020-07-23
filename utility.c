@@ -33,7 +33,7 @@ char *read_file(char *path){
     char *buffer = NULL;
     assert(file = fopen(path,"r"));
     size = file_size(path);
-    assert(buffer = malloc(size));
+    assert(buffer = malloc(size + 1));
     read_string_from_file(buffer,size,file);
     fclose(file);
     return buffer;

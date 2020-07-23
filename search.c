@@ -9,10 +9,11 @@
 
 void search(char *inputfile, char *dir, int limit){
     int *index = 0;
+    char **paths = NULL;
     char *contentif = read_file(inputfile);
     visit_in_depth(dir, inputfile, &index, NULL);
     int size = index;
-    char **paths = malloc(sizeof(char *) * size);
+    assert(paths = malloc(sizeof(char *) * size));
     index = 0;
     visit_in_depth(dir, inputfile, &index, paths);
     if(limit==NULL)
@@ -49,7 +50,7 @@ void search_one(char *inputfile, int size, char **paths, char *contentif){
 void search_all(char *inputfile, int size, char **paths, char *contentif, int limit){
     int i = -1;
     D_PATH **dpath = malloc_matrix(size,sizeof(D_PATH*) * size, sizeof(D_PATH));
-    for(i = 0;i<size; i++) {
+    for(i = 0;i < size; i++) {
         char *file_path = read_file(paths[i]);
         int n = distance(contentif, file_path, NULL);
         dpath[i]->distance = -1;
@@ -82,7 +83,7 @@ void visit_in_depth(char *path, char *inputfile, int *index, char **paths){
                 visit_in_depth(new, inputfile, index, paths);
             }else{
                 if(paths != NULL) {
-                    assert(paths[*index] = malloc(strlen(new) + 1));
+                    assert(paths[*index] = malloc((strlen(new) + 1) * sizeof(char )));
                     strcpy(paths[*index], new);
                 }
                 (*index)++;

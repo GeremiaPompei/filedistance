@@ -27,12 +27,12 @@ int distance(char *contentf1, char *contentf2, char *output) {
     int **matrix = NULL;
     sizef1 = strlen(contentf1);
     sizef2 = strlen(contentf2);
-    matrix = malloc_matrix(sizef1+1,(sizef1 + 1) * sizeof(int*),(sizef2 + 1) * sizeof(int));
+    matrix = malloc_matrix(sizef1 + 1,(sizef1 + 1) * sizeof(int*),(sizef2 + 1) * sizeof(int));
     calculate_distance(contentf1, contentf2, matrix);
     distance = matrix[sizef1][sizef2];
     if(output != NULL)
         file_m_build(matrix, sizef1, sizef2, contentf1, contentf2, output);
-    free_matrix(matrix,sizef1+1);
+    free_matrix(matrix,sizef1 + 1);
     return distance;
 }
 
@@ -63,7 +63,7 @@ void calculate_distance(char *contentf1, char *contentf2, int **matrix){
 void file_m_build(int **matrix, int sizef1, int sizef2, char *file1, char *file2, char *output){
     int i;
     int size = matrix[sizef1][sizef2] + 1;
-    char **instructions = malloc_matrix(size+1,sizeof(char *) * size,sizeof(char ) * 8);
+    char **instructions = malloc_matrix(size + 1,sizeof(char *) * size,sizeof(char ) * 8);
     FILE *file = NULL;
     assert(file = fopen(output,"w"));
     while(sizef1 > 0 && sizef2 > 0){
@@ -95,5 +95,5 @@ void file_m_build(int **matrix, int sizef1, int sizef2, char *file1, char *file2
     for (i = 1;i<size;i++)
         fprintf(file, "%s", instructions[i]);
     fclose(file);
-    free_matrix(instructions,size+1);
+    free_matrix(instructions,size + 1);
 }

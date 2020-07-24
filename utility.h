@@ -10,6 +10,6 @@ void write_file(char *path,char *buffer,int size);
 int minimum(int a, int b, int c);
 long file_size(char *path);
 void read_string_from_file(char *buffer, int size, FILE *file);
-void build_path(char* new,char *old,char *name);
+void build_path(char* new, char *old, char *name);
 
 #endif

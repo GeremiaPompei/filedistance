@@ -63,7 +63,7 @@ int minimum(int a, int b, int c) {
     return min;
 }
 
-void build_path(char* new,char *old,char *name){
+void build_path(char* new, char *old, char *name){
     int n = strlen(old) - 1;
     strcpy(new,old);
     if(old[n] != '/')

@@ -8,11 +8,11 @@
 #include "search.h"
 
 void search(char *inputfile, char *dir, int limit){
-    int *index = 0;
-    char **paths = NULL;
-    char *contentif = read_file(inputfile);
+    int *index = 0, size = -1;
+    char **paths = NULL, *contentif = NULL;
+    contentif = read_file(inputfile);
     visit_in_depth(dir, inputfile, &index, NULL);
-    int size = index;
+    size = index;
     assert(paths = malloc(sizeof(char *) * size));
     index = 0;
     visit_in_depth(dir, inputfile, &index, paths);
@@ -25,22 +25,20 @@ void search(char *inputfile, char *dir, int limit){
 }
 
 void search_one(char *inputfile, int size, char **paths, char *contentif){
-    int i= -1,MIN = -1;
-    char *buffer = NULL;
-    assert(buffer= malloc(256 * (size+1) * sizeof(char )));
+    int i= -1,dist = -1,MIN = -1, sizepaths = 0;
+    char *buffer = NULL, *contenttmpf = NULL;
+    for (i = 0;i<size;i++)
+        sizepaths += strlen(paths[i]);
+    assert(buffer = malloc(sizepaths * sizeof(char )));
     for(i = 0;i<size; i++) {
-        char *contenttmpf = read_file(paths[i]);
-        int n = distance(contentif, contenttmpf, NULL);
-        if ((n <= MIN || MIN == -1) && strcmp(inputfile, paths[i]) != 0) {
-            if(n==MIN){
-                char tmp[256];
-                sprintf(tmp,"%d %s\n",MIN,paths[i]);
-                strcat(buffer,tmp);
-            } else {
-                MIN = n;
+        contenttmpf = read_file(paths[i]);
+        dist = distance(contentif, contenttmpf, NULL);
+        if ((dist <= MIN || MIN == -1) && strcmp(inputfile, paths[i]) != 0)
+            if(dist!=MIN){
+                MIN = dist;
                 sprintf(buffer,"%d %s\n",MIN,paths[i]);
-            }
-        }
+            } else
+                sprintf(&buffer[strlen(buffer)],"%d %s\n",MIN,paths[i]);
         free(contenttmpf);
     }
     printf("%s",buffer);
@@ -48,14 +46,15 @@ void search_one(char *inputfile, int size, char **paths, char *contentif){
 }
 
 void search_all(char *inputfile, int size, char **paths, char *contentif, int limit){
-    int i = -1;
+    int i = -1, dist = -1;
+    char *file_path = NULL;
     D_PATH **dpath = malloc_matrix(size,sizeof(D_PATH*) * size, sizeof(D_PATH));
     for(i = 0;i < size; i++) {
-        char *file_path = read_file(paths[i]);
-        int n = distance(contentif, file_path, NULL);
+        file_path = read_file(paths[i]);
+        dist = distance(contentif, file_path, NULL);
         dpath[i]->distance = -1;
-        if ((n <= limit) && strcmp(inputfile, paths[i]) != 0) {
-            dpath[i]->distance = n;
+        if ((dist <= limit) && strcmp(inputfile, paths[i]) != 0) {
+            dpath[i]->distance = dist;
             dpath[i]->path = paths[i];
         }
         free(file_path);
@@ -76,7 +75,7 @@ void visit_in_depth(char *path, char *inputfile, int *index, char **paths){
     DIR *dir = NULL;
     assert(dir = opendir(path));
     while ((dirent = readdir(dir)) != NULL) {
-        char *new[strlen(path) + strlen(dirent->d_name)];
+        char *(new)[strlen(path) + strlen(dirent->d_name) + 1];
         build_path(new, path, dirent->d_name);
         if((dirent->d_name)[0] != '.' && strcmp(inputfile, new) != 0){
             if(dirent->d_type == 4){

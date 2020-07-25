@@ -27,6 +27,15 @@ void write_file(char *path,char *buffer,int size){
     fclose(file);
 }
 
+void write_matrix(char *path,char **buffer,int size){
+    int i = -1;
+    FILE *file = NULL;
+    assert(file = fopen(path,"w"));
+    for (i = 1;i<=size;i++)
+        fprintf(file,"%s",buffer[i]);
+    fclose(file);
+}
+
 char *read_file(char *path){
     long size = -1;
     FILE *file = NULL;

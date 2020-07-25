@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <time.h>
+#include <assert.h>
 #include "utility.h"
 #include "distance.h"
 
@@ -63,13 +64,9 @@ void file_m_build(int **matrix, int sizef1, int sizef2, char *file1, char *file2
     char **instructions = NULL, *buffer = NULL;
     size = matrix[sizef1][sizef2];
     instructions = malloc_matrix(size + 1,sizeof(char *) * (size + 1),sizeof(char ) * 9);
-    buffer = malloc(size * 9);
     middle_instructions(matrix,instructions,psizef1,psizef2,file1,file2);
     final_instructions(matrix,instructions,psizef1,psizef2,file1,file2);
-    for (i = 1;i<=size;i++)
-        strcat(buffer, instructions[i]);
-    write_file(output,buffer,size * 9);
-    free(buffer);
+    write_matrix(output,instructions,size);
     free_matrix(instructions,size + 1);
 }
 
